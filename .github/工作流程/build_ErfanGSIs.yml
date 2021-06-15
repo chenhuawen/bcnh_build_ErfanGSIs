@@ -1,0 +1,61 @@
+名称：build_ErfanGSIs
+
+于：
+＃  发布：
+＃    类型：[已发布]
+＃  推送：
+＃个    分支：
+＃       -大师
+＃    条路径：
+＃       -'.config'
+＃  时间表：
+＃     -cron：0 8 * * 5
+  观看：
+    类型：[开始]
+    
+env：
+  ROM_URL：https : //download.c.realme.com/osupdate/RMX1851_11_OTA_1120_all_wloHLd7c8w5w.ozip
+  ROM_NAME：RealmeUI10
+  TZ：亚洲/上海
+
+职位：
+  建立：
+    运行：ubuntu20.10
+    如果：github.event.repository.owner.id == github.event.sender.id
+
+    步骤：
+       -名称：结帐
+         用途：actions / checkout @ master
+           
+       -名称：初始化环境
+         运行：|
+            须藤-E apt-get -qq install git openjdk-11-jdk wget
+       
+       -名称：克隆ErfanGSI源代码
+         运行：git clone --recurse-submodules https://github.com/erfanoabdi/ErfanGSIs.git ErfanGSIs
+         
+       -名称：修复出口
+         运行：|
+              sed -i's / \ | \ | 退出1 // g'$ GITHUB_WORKSPACE / ErfanGSIs / url2GSI.sh
+              sed -i's / exit 1 // g'$ GITHUB_WORKSPACE / ErfanGSIs / url2GSI.sh
+       
+       -名称：设置ErfanGSI要求
+         运行：|
+              cd ErfanGSI
+              mkdir ./输出
+              须藤bash setup.sh
+       
+       -名称：下载Rom并生成GSIS
+         运行：sudo ./ErfanGSIs/url2GSI.sh -c -b $ ROM_URL $ ROM_NAME
+       
+       -名称：Zip GSIS  
+         运行：|
+              cd $ GITHUB_WORKSPACE / ErfanGSIs /输出
+              mkdir final
+              zip -r final / GSIS.zip ./*
+       
+       -名称：将GSIS上传到BitSend
+         运行：|
+              cd $ GITHUB_WORKSPACE / ErfanGSIs /输出
+              curl -sL https://git.io/文件传输| SH
+              ./transfer湿式./final/GSIS.zip名称：Realmeui10OS-AB-GSIS.img
